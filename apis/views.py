@@ -1,27 +1,27 @@
-from rest_framework import generics
+from rest_framework import viewsets, views, response
 from medicine.models import Medicine, Symptom, Effect
 from .serializers  import MedicineSerializer, SymptomSerializer, EffectSerializer
 
-class MedicineAPIView( generics.ListAPIView ):
+class MedicineViewSet( viewsets.ModelViewSet ):
     queryset = Medicine.objects.all()
     serializer_class = MedicineSerializer
 
-class MedicineDetail( generics.RetrieveAPIView ):
-    queryset = Medicine.objects.all()
-    serializer_class = MedicineSerializer
-
-class SymptomAPIView( generics.ListAPIView ):
+class SymptomViewSet( viewsets.ModelViewSet ):
     queryset = Symptom.objects.all()
     serializer_class = SymptomSerializer
 
-class SymptomDetail( generics.RetrieveAPIView ):
-    queryset = Symptom.objects.all()
-    serializer_class = SymptomSerializer
-
-class EffectAPIView( generics.ListAPIView ):
+class EffectViewSet( viewsets.ModelViewSet ):
     queryset = Effect.objects.all()
     serializer_class = EffectSerializer
 
-class EffectDetail( generics.RetrieveAPIView ):
-    queryset = Effect.objects.all()
-    serializer_class = EffectSerializer
+class ConsulationView ( views.APIView ):
+    def post(self, request):
+
+        data = request.data
+        medicine_fields = Medicine.objects.raw("SELECT name, price from medicine_medicine")
+        for p in medicine_fields:
+            print(p.name, p.price)
+
+        message = "operation performed successfully"
+
+        return response.Response({'message': message})
