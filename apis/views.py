@@ -18,10 +18,18 @@ class ConsulationView ( views.APIView ):
     def post(self, request):
 
         data = request.data
-        medicine_fields = Medicine.objects.raw("SELECT name, price from medicine_medicine")
-        for p in medicine_fields:
-            print(p.name, p.price)
+        m_p_data = Medicine.objects.raw(f"SELECT name, price FROM {Medicine._meta.db_table}")
+        m_e_data = Effect.objects.raw(f"SELECT id, effect FROM {Effect._meta.db_table}")
+        m_s_data = Symptom.objects.raw(f"SELECT name FROM {Symptom._meta.db_table}")
+        m_p = {}
+        for m in m_p_data:
+            m_p.update({m.name: m.price})
 
-        message = "operation performed successfully"
+        m_e = {m.name: {} for m in m_p_data}
+        for m in m_e_data:
+            m_e[m.medicine.name].update({m.symptom.name: m.effect})
 
-        return response.Response({'message': message})
+        print(m_e)
+
+
+        return response.Response(m_p)
