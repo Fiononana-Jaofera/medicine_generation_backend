@@ -23,10 +23,17 @@ def allwords(M, res, lst, n, seuil):
 def calcul_prix(M, p):
     return [sum([p[i] for i in m]) for m in M]
 
-cas_possible = allwords(m_e, [], [], sum(s), s)
-liste_prix = calcul_prix(cas_possible, m_p)
-prix_minimal = min(liste_prix)
-index_liste_optimale = liste_prix.index(prix_minimal)
-liste_optimale = cas_possible[index_liste_optimale]
-print("Combinaison optimale: ", liste_optimale)
-print("Prix minimal: ", prix_minimal)
+# cas_possible = allwords(m_e, [], [], sum(s), s)
+# liste_prix = calcul_prix(cas_possible, m_p)
+# prix_minimal = min(liste_prix)
+# index_liste_optimale = liste_prix.index(prix_minimal)
+# liste_optimale = cas_possible[index_liste_optimale]
+# print("Combinaison optimale: ", liste_optimale)
+# print("Prix minimal: ", prix_minimal)
+
+def sort_dict_by_key(x):
+    temp = {}
+    keys = [k for k in x.keys()]
+    keys.sort()
+    temp.update({k: x.get(k) for k in keys})
+    return temp.copy()
