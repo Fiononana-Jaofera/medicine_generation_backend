@@ -5,13 +5,13 @@ from medicine.models import Medicine, Symptom, Effect
 class MedicineSerializer( serializers.ModelSerializer ):
     class Meta:
         model = Medicine
-        fields = ["name", "price"]
+        fields = ["id","name", "price"]
 
 
 class SymptomSerializer( serializers.ModelSerializer ):
     class Meta:
         model = Symptom
-        fields = ["name"]
+        fields = ["id","name"]
 
 class EffectSerializer( serializers.ModelSerializer ):
     class Meta:
