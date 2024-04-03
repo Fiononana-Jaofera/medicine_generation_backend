@@ -1,4 +1,4 @@
-from rest_framework import generics, response
+from rest_framework import generics, response, views
 from medicine.models import Medicine, Symptom, Effect
 from .serializers  import MedicineSerializer, SymptomSerializer, EffectSerializer
 from .algo import *
@@ -20,6 +20,12 @@ class SymptomList(generics.ListCreateAPIView):
 class SymptomDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Symptom.objects.all()
     serializer_class = SymptomSerializer
+
+class EffectView( views.APIView ):
+    def get( self, request ):
+        medicines = Medicine.objects.raw(f"SELECT name FROM {Medicine._meta.db_table}")
+        symptoms = Symptom.objects.raw(f"SELECT name FROM {Symptom._meta.db_table}")
+        m_e_data = Effect.objects.raw(f"SELECT id, effect FROM {Effect._meta.db_table}")
 
 # class ConsulationView ( views.APIView ):
 #     def post(self, request):
