@@ -16,4 +16,4 @@ class SymptomSerializer( serializers.ModelSerializer ):
 class EffectSerializer( serializers.ModelSerializer ):
     class Meta:
         model = Effect
-        fields = ["id", "medicine","symptom","effect"]
+        fields = ["id", "medicine","symptom","effect"]    

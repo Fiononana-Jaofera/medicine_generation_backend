@@ -1,6 +1,6 @@
 from django.urls import path
 # from rest_framework.routers import SimpleRouter
-from .views import MedicineList, MedicineDetail, SymptomDetail, SymptomList
+from .views import MedicineList, MedicineDetail, SymptomDetail, SymptomList, EffectList, EffectDetail, CombineDataView
 # router = SimpleRouter()
 
 # router.register("medicines", MedicineViewSet, basename="medicine")
@@ -16,4 +16,7 @@ urlpatterns = [
     path("medicines/", MedicineList.as_view(), name="medicine_list"),
     path("symptoms/<int:pk>/", SymptomDetail.as_view(), name="symptom_detail"),
     path("symptoms/", SymptomList.as_view(), name="symptom_list"),
+    path("effects/<int:pk>/", EffectDetail.as_view(), name="effects_detail"),
+    path("effects/", EffectList.as_view(), name="effects_list"),
+    path("test/", CombineDataView.as_view(), name="test")
 ]

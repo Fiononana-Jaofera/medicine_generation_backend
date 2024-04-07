@@ -7,25 +7,57 @@ from .algo import *
 #     queryset = Effect.objects.all()
 #     serializer_class = EffectSerializer
 
-class MedicineList(generics.ListCreateAPIView):
+class MedicineList( generics.ListCreateAPIView ):
     queryset = Medicine.objects.all()
     serializer_class = MedicineSerializer
-class MedicineDetail(generics.RetrieveUpdateDestroyAPIView):
+class MedicineDetail( generics.RetrieveUpdateDestroyAPIView ):
     queryset = Medicine.objects.all()
     serializer_class = MedicineSerializer
 
-class SymptomList(generics.ListCreateAPIView):
+class SymptomList( generics.ListCreateAPIView ):
     queryset = Symptom.objects.all()
     serializer_class = SymptomSerializer
-class SymptomDetail(generics.RetrieveUpdateDestroyAPIView):
+class SymptomDetail( generics.RetrieveUpdateDestroyAPIView ):
     queryset = Symptom.objects.all()
     serializer_class = SymptomSerializer
 
-class EffectView( views.APIView ):
+class EffectList( generics.ListCreateAPIView ):
+    queryset = Effect.objects.all()
+    serializer_class = EffectSerializer
+class EffectDetail( generics.RetrieveUpdateDestroyAPIView ):
+    queryset = Effect.objects.all()
+    serializer_class = EffectSerializer
+
+class CombineDataView( views.APIView ):
     def get( self, request ):
-        medicines = Medicine.objects.raw(f"SELECT name FROM {Medicine._meta.db_table}")
-        symptoms = Symptom.objects.raw(f"SELECT name FROM {Symptom._meta.db_table}")
-        m_e_data = Effect.objects.raw(f"SELECT id, effect FROM {Effect._meta.db_table}")
+        medicines_data = Medicine.objects.all()
+        symptoms_data = Symptom.objects.all()
+        effects_data = Effect.objects.all()
+
+        if len(effects_data) == 0:
+            for m in medicines_data:
+                for s in symptoms_data:
+                    e = Effect(medicine=m, symptom=s, effect=0)
+                    e.save()
+        elif len(effects_data) != (len(medicines_data) * len(symptoms_data)):
+            container = list(effects_data.values("medicine_id", "symptom_id"))
+            for m in medicines_data:
+                for s in symptoms_data:
+                    if {'medicine_id': m.id, 'symptom_id': s.id} in container:
+                        continue
+                    else:
+                        e = Effect(medicine=m, symptom=s, effect=0)
+                        e.save()
+
+        container = list(effects_data.values())
+        for c in container:
+            c['medicine_id'] = Medicine.objects.raw(f"SELECT id, name FROM {Medicine._meta.db_table} WHERE id={c['medicine_id']}")[0].name
+            c['symptom_id'] = Symptom.objects.raw(f"SELECT id, name FROM {Symptom._meta.db_table} WHERE id={c['symptom_id']}")[0].name
+
+        return response.Response(container)
+
+        
+
 
 # class ConsulationView ( views.APIView ):
 #     def post(self, request):
