@@ -34,18 +34,18 @@ class CombineDataView( views.APIView ):
         symptoms_data = Symptom.objects.all()
         
         if pk!=None:
-            try:
-                effects_item = Effect.objects.get(id = pk)
-                return response.Response({
-                    "id": pk,
-                    "medicine_id": Medicine.objects.raw(f"SELECT id, name FROM {Medicine._meta.db_table} WHERE id={effects_item.medicine_id}")[0].name,
-                    "symptom_id": Symptom.objects.raw(f"SELECT id, name FROM {Symptom._meta.db_table} WHERE id={effects_item.symptom_id}")[0].name,
-                    "effect": effects_item.effect,
-                })  
-            except:
-                return response.Response({
-                    "message": "not found"
+            medicine_id = Medicine.objects.raw(f"SELECT id FROM {Medicine._meta.db_table} WHERE name='{pk}'")[0].id
+            effects_data = Effect.objects.raw(f"SELECT * FROM {Effect._meta.db_table} WHERE medicine_id={medicine_id}")
+            container = []
+            for e in effects_data:
+                container.append({
+                    'id': e.id,
+                    'medicine_id': Medicine.objects.raw(f"SELECT id, name FROM {Medicine._meta.db_table} WHERE id={e.medicine_id}")[0].name,
+                    'symptom_id': Symptom.objects.raw(f"SELECT id, name FROM {Symptom._meta.db_table} WHERE id={e.symptom_id}")[0].name,
+                    'effect': e.effect
                 })
+
+            return response.Response(container)  
         else:
             effects_data = Effect.objects.all()
             if len(effects_data) == 0:

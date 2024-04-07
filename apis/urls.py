@@ -19,5 +19,5 @@ urlpatterns = [
     path("effects_dev/<int:pk>/", EffectDetail.as_view(), name="effects_detail_dev"),
     path("effects_dev/", EffectList.as_view(), name="effects_list_dev"),
     path("effects/", CombineDataView.as_view(), name="effects_list"),
-    path("effects/<int:pk>/", CombineDataView.as_view(), name="effects_detail"),
+    path("effects/<str:pk>/", CombineDataView.as_view(), name="effects_detail"),
 ]
