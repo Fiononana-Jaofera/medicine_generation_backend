@@ -16,7 +16,8 @@ urlpatterns = [
     path("medicines/", MedicineList.as_view(), name="medicine_list"),
     path("symptoms/<int:pk>/", SymptomDetail.as_view(), name="symptom_detail"),
     path("symptoms/", SymptomList.as_view(), name="symptom_list"),
-    path("effects_dev/<int:pk>/", EffectDetail.as_view(), name="effects_detail"),
+    path("effects_dev/<int:pk>/", EffectDetail.as_view(), name="effects_detail_dev"),
     path("effects_dev/", EffectList.as_view(), name="effects_list_dev"),
-    path("effects/", CombineDataView.as_view(), name="effects_list")
+    path("effects/", CombineDataView.as_view(), name="effects_list"),
+    path("effects/<int:pk>/", CombineDataView.as_view(), name="effects_detail"),
 ]

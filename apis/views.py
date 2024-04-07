@@ -29,34 +29,46 @@ class EffectDetail( generics.RetrieveUpdateDestroyAPIView ):
     serializer_class = EffectSerializer
 
 class CombineDataView( views.APIView ):
-    def get( self, request ):
+    def get( self, request, pk=None ):
         medicines_data = Medicine.objects.all()
         symptoms_data = Symptom.objects.all()
-        effects_data = Effect.objects.all()
-
-        if len(effects_data) == 0:
-            for m in medicines_data:
-                for s in symptoms_data:
-                    e = Effect(medicine=m, symptom=s, effect=0)
-                    e.save()
-        elif len(effects_data) != (len(medicines_data) * len(symptoms_data)):
-            container = list(effects_data.values("medicine_id", "symptom_id"))
-            for m in medicines_data:
-                for s in symptoms_data:
-                    if {'medicine_id': m.id, 'symptom_id': s.id} in container:
-                        continue
-                    else:
+        
+        if pk!=None:
+            try:
+                effects_item = Effect.objects.get(id = pk)
+                return response.Response({
+                    "id": pk,
+                    "medicine_id": Medicine.objects.raw(f"SELECT id, name FROM {Medicine._meta.db_table} WHERE id={effects_item.medicine_id}")[0].name,
+                    "symptom_id": Symptom.objects.raw(f"SELECT id, name FROM {Symptom._meta.db_table} WHERE id={effects_item.symptom_id}")[0].name,
+                    "effect": effects_item.effect,
+                })  
+            except:
+                return response.Response({
+                    "message": "not found"
+                })
+        else:
+            effects_data = Effect.objects.all()
+            if len(effects_data) == 0:
+                for m in medicines_data:
+                    for s in symptoms_data:
                         e = Effect(medicine=m, symptom=s, effect=0)
                         e.save()
+            elif len(effects_data) != (len(medicines_data) * len(symptoms_data)):
+                container = list(effects_data.values("medicine_id", "symptom_id"))
+                for m in medicines_data:
+                    for s in symptoms_data:
+                        if {'medicine_id': m.id, 'symptom_id': s.id} in container:
+                            continue
+                        else:
+                            e = Effect(medicine=m, symptom=s, effect=0)
+                            e.save()
 
-        container = list(effects_data.values())
-        for c in container:
-            c['medicine_id'] = Medicine.objects.raw(f"SELECT id, name FROM {Medicine._meta.db_table} WHERE id={c['medicine_id']}")[0].name
-            c['symptom_id'] = Symptom.objects.raw(f"SELECT id, name FROM {Symptom._meta.db_table} WHERE id={c['symptom_id']}")[0].name
+            container = list(effects_data.values())
+            for c in container:
+                c['medicine_id'] = Medicine.objects.raw(f"SELECT id, name FROM {Medicine._meta.db_table} WHERE id={c['medicine_id']}")[0].name
+                c['symptom_id'] = Symptom.objects.raw(f"SELECT id, name FROM {Symptom._meta.db_table} WHERE id={c['symptom_id']}")[0].name
 
-        return response.Response(container)
-
-        
+            return response.Response(container)            
 
 
 # class ConsulationView ( views.APIView ):
