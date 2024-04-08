@@ -68,7 +68,17 @@ class CombineDataView( views.APIView ):
                 c['medicine_id'] = Medicine.objects.raw(f"SELECT id, name FROM {Medicine._meta.db_table} WHERE id={c['medicine_id']}")[0].name
                 c['symptom_id'] = Symptom.objects.raw(f"SELECT id, name FROM {Symptom._meta.db_table} WHERE id={c['symptom_id']}")[0].name
 
-            return response.Response(container)            
+            return response.Response(container)
+    def put(self, request):
+        data = request.data
+
+        for d in data:
+            instance = Effect.objects.filter(id = d['id'])[0]
+            if instance.effect != d['effect']:
+                instance.effect = d['effect']
+                instance.save()
+        
+        return response.Response({"message": "post request"})
 
 
 # class ConsulationView ( views.APIView ):
