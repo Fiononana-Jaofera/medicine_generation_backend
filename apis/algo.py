@@ -10,8 +10,8 @@ def allwords(M, res, lst, n, seuil):
             for i in range(len(seuil)):
                 seuil[i]-=e[i]
             temp = lst + [m]
-            if min(seuil)<0 and max(seuil)==max(lst_s):
-                continue
+            # if min(seuil)<0 and max(seuil)==max(lst_s):
+            #     continue
             res_t = allwords(M, res, temp, n-1, seuil)
             res = res_t
     return res

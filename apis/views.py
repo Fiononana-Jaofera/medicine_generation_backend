@@ -96,7 +96,7 @@ class ConsultationView ( views.APIView ):
             m_e[k] = list(v.values())
 
 
-        cas_possible = allwords(m_e, [], [], sum(s), s)
+        cas_possible = allwords(m_e, [], [], sum(s) if sum(s)<10 else 10, s)
         liste_prix = calcul_prix(cas_possible, m_p)
         prix_minimal = min(liste_prix)
         index_liste_optimale = liste_prix.index(prix_minimal)
